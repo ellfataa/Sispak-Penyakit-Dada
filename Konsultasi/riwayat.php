@@ -16,14 +16,6 @@
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Ambil informasi semua penyakit untuk perhitungan total probabilitas
-    $sqlPenyakitCount = "SELECT COUNT(*) as total_penyakit FROM penyakit";
-    $resultPenyakitCount = $conn->query($sqlPenyakitCount);
-    $totalPenyakit = 1; // Default jika query gagal
-    if ($rowCount = $resultPenyakitCount->fetch_assoc()) {
-        $totalPenyakit = $rowCount['total_penyakit'];
-    }
-
     // Ambil semua data gejala
     $daftarGejala = [];
     $sqlGejala = "SELECT kode_gejala, nama_gejala FROM gejala";
@@ -32,15 +24,17 @@
         $daftarGejala[$row['kode_gejala']] = $row['nama_gejala'];
     }
 
-    // Ambil total gejala
-    $totalGejala = 0;
-    $sqlTotalGejala = "SELECT COUNT(*) as total_gejala FROM gejala";
-    $resultTotalGejala = $conn->query($sqlTotalGejala);
-    if ($row = $resultTotalGejala->fetch_assoc()) {
-        $totalGejala = $row['total_gejala'];
+    // Ambil informasi semua penyakit
+    $penyakit = [];
+    $solusiPenyakit = []; // Array untuk menyimpan solusi penyakit
+    $sqlPenyakit = "SELECT kode_penyakit, nama_penyakit, solusi FROM penyakit";
+    $resultPenyakit = $conn->query($sqlPenyakit);
+    while ($row = $resultPenyakit->fetch_assoc()) {
+        $penyakit[$row['kode_penyakit']] = $row['nama_penyakit'];
+        $solusiPenyakit[$row['kode_penyakit']] = $row['solusi']; // Simpan solusi berdasarkan kode penyakit
     }
 
-    // Ambil data relasi penyakit-gejala untuk perhitungan nc
+    // Ambil relasi gejala-penyakit untuk perhitungan probabilitas
     $relasiPenyakitGejala = [];
     $sqlRelasi = "SELECT kode_penyakit, kode_gejala FROM penyakit_gejala";
     $resultRelasi = $conn->query($sqlRelasi);
@@ -51,55 +45,53 @@
         $relasiPenyakitGejala[$row['kode_penyakit']][] = $row['kode_gejala'];
     }
 
-    // Fungsi untuk menghitung semua probabilitas penyakit berdasarkan gejala
-    function hitungSemuaProbabilitas($gejalaDipilih, $totalPenyakit, $totalGejala, $relasiPenyakitGejala) {
-        // Ambil semua data penyakit
-        global $conn;
-        $penyakit = [];
+    // Ambil total penyakit dan gejala untuk perhitungan probabilitas
+    $totalPenyakit = count($penyakit);
+    $totalGejala = count($daftarGejala);
 
-        $sql = "SELECT kode_penyakit, nama_penyakit FROM penyakit";
-        $result = $conn->query($sql);
+    // Fungsi untuk mendapatkan probabilitas masing-masing penyakit untuk perhitungan normalisasi
+    function hitungProbabilitasPenyakit($gejalaDipilih, $relasiPenyakitGejala, $totalPenyakit, $totalGejala, $penyakit) {
+        $hasilPerhitungan = [];
         
-        while ($row = $result->fetch_assoc()) {
-            $penyakit[$row['kode_penyakit']] = [
-                'nama_penyakit' => $row['nama_penyakit'],
-                'posterior_probability' => 0
-            ];
-        }
-
         // Hitung probabilitas untuk setiap penyakit
-        foreach ($penyakit as $kodePenyakit => &$dataPenyakit) {
-            // Prior probability untuk tiap penyakit (asumsi peluang yang sama)
+        foreach ($penyakit as $kodePenyakit => $namaPenyakit) {
+            // Prior probability untuk setiap penyakit (1/jumlah_penyakit)
             $priorProbability = 1 / $totalPenyakit;
             
             // Inisialisasi dengan prior probability
             $posteriorProbability = $priorProbability;
             
-            // Hitung likelihood untuk setiap gejala yang dipilih
+            // Kalikan dengan likelihood untuk setiap gejala yang dipilih
             foreach ($gejalaDipilih as $gejala) {
-                // Tentukan nilai nc (1 jika gejala ada pada penyakit, 0 jika tidak)
+                // Nilai nc (1 jika gejala ada pada penyakit, 0 jika tidak)
                 $nc = in_array($gejala, $relasiPenyakitGejala[$kodePenyakit] ?? []) ? 1 : 0;
                 
-                // Parameter laplacian smoothing
-                $n = 1; // Jumlah gejala pada penyakit (selalu 1 untuk gejala biner)
-                $m = $totalGejala; // Total gejala yang ada dalam database
-                $p = $priorProbability; // P(vj) untuk penyakit ini
+                // Parameter untuk perhitungan likelihood
+                $n = 1; // Selalu 1 untuk gejala biner
+                $m = $totalGejala;
+                $p = $priorProbability;
                 
                 // Hitung P(ai|vj) dengan laplacian smoothing
                 $likelihood = ($nc + $m * $p) / ($n + $m);
                 
-                // Kalikan dengan posterior probability
+                // Kalikan posterior probability dengan likelihood
                 $posteriorProbability *= $likelihood;
             }
             
-            // Simpan hasil akhir
-            $dataPenyakit['posterior_probability'] = $posteriorProbability;
+            $hasilPerhitungan[$kodePenyakit] = $posteriorProbability;
         }
         
-        // Hitung total probabilitas
-        $totalProb = array_sum(array_column($penyakit, 'posterior_probability'));
-        
-        return $totalProb;
+        return $hasilPerhitungan;
+    }
+
+    // Fungsi untuk mendapatkan kode penyakit dari nama penyakit
+    function getKodePenyakitDariNama($namaPenyakit, $penyakit) {
+        foreach ($penyakit as $kode => $nama) {
+            if ($nama === $namaPenyakit) {
+                return $kode;
+            }
+        }
+        return null;
     }
 
     $riwayat = [];
@@ -107,13 +99,20 @@
         // Dapatkan gejala yang dipilih
         $gejalaDipilih = json_decode($row['gejala_dipilih']);
         
-        // Hitung total probabilitas untuk normalisasi
-        $totalProb = hitungSemuaProbabilitas($gejalaDipilih, $totalPenyakit, $totalGejala, $relasiPenyakitGejala);
+        // Hitung probabilitas untuk semua penyakit
+        $hasilPerhitungan = hitungProbabilitasPenyakit($gejalaDipilih, $relasiPenyakitGejala, $totalPenyakit, $totalGejala, $penyakit);
         
-        // Normalisasi probabilitas
+        // Hitung total probabilitas untuk normalisasi
+        $totalProb = array_sum($hasilPerhitungan);
+        
+        // Normalisasi probabilitas seperti di proses_konsultasi.php
         $probabilitasNormalisasi = ($totalProb > 0) ? ($row['probabilitas'] / $totalProb) * 100 : 0;
         
-        // Tambahkan ke array riwayat dengan probabilitas yang sudah dinormalisasi
+        // Tambahkan solusi berdasarkan hasil diagnosa
+        $kodePenyakit = getKodePenyakitDariNama($row['hasil_diagnosa'], $penyakit);
+        $row['solusi'] = $solusiPenyakit[$kodePenyakit] ?? 'Solusi tidak tersedia';
+        
+        // Tambahkan ke array riwayat
         $row['probabilitas_normalized'] = $probabilitasNormalisasi;
         $riwayat[] = $row;
     }
@@ -130,7 +129,7 @@
     </head>
     <body class="bg-green-50 text-gray-800 min-h-screen">
 
-        <div class="max-w-5xl mx-auto mt-10 bg-white p-6 rounded shadow-md">
+        <div class="max-w-6xl mx-auto mt-10 bg-white p-6 rounded shadow-md">
             <h2 class="text-2xl font-semibold text-green-700 mb-6 text-center">Riwayat Konsultasi Anda</h2>
 
             <?php if (count($riwayat) > 0): ?>
@@ -141,6 +140,7 @@
                                 <th class="px-4 py-2 border">No</th>
                                 <th class="px-4 py-2 border">Hasil Diagnosa</th>
                                 <th class="px-4 py-2 border">Probabilitas</th>
+                                <th class="px-4 py-2 border">Solusi</th>
                                 <th class="px-4 py-2 border">Gejala Dipilih</th>
                                 <th class="px-4 py-2 border">Waktu Konsultasi</th>
                             </tr>
@@ -151,6 +151,7 @@
                                     <td class="px-4 py-2 border"><?= $index + 1; ?></td>
                                     <td class="px-4 py-2 border"><?= htmlspecialchars($r['hasil_diagnosa']); ?></td>
                                     <td class="px-4 py-2 border"><?= round($r['probabilitas_normalized'], 2); ?>%</td>
+                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['solusi']); ?></td>
                                     <td class="px-4 py-2 border">
                                         <?php 
                                         $gejalaList = json_decode($r['gejala_dipilih']);
