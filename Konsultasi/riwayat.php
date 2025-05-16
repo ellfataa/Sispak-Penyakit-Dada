@@ -9,8 +9,12 @@
 
     $idUser = $_SESSION['id_user'];
 
-    // Ambil riwayat konsultasi dari database
-    $sql = "SELECT * FROM riwayat_konsultasi WHERE id_user = ? ORDER BY waktu_konsultasi DESC";
+    // Ambil riwayat konsultasi dari database dengan JOIN ke tabel penyakit
+    $sql = "SELECT r.*, p.kode_penyakit, p.nama_penyakit, p.solusi 
+            FROM riwayat_konsultasi r
+            LEFT JOIN penyakit p ON r.kode_penyakit = p.kode_penyakit
+            WHERE r.id_user = ? 
+            ORDER BY r.waktu_konsultasi DESC";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $idUser);
     $stmt->execute();
@@ -84,16 +88,6 @@
         return $hasilPerhitungan;
     }
 
-    // Fungsi untuk mendapatkan kode penyakit dari nama penyakit
-    function getKodePenyakitDariNama($namaPenyakit, $penyakit) {
-        foreach ($penyakit as $kode => $nama) {
-            if ($nama === $namaPenyakit) {
-                return $kode;
-            }
-        }
-        return null;
-    }
-
     $riwayat = [];
     while ($row = $result->fetch_assoc()) {
         // Dapatkan gejala yang dipilih
@@ -107,10 +101,6 @@
         
         // Normalisasi probabilitas seperti di proses_konsultasi.php
         $probabilitasNormalisasi = ($totalProb > 0) ? ($row['probabilitas'] / $totalProb) * 100 : 0;
-        
-        // Tambahkan solusi berdasarkan hasil diagnosa
-        $kodePenyakit = getKodePenyakitDariNama($row['hasil_diagnosa'], $penyakit);
-        $row['solusi'] = $solusiPenyakit[$kodePenyakit] ?? 'Solusi tidak tersedia';
         
         // Tambahkan ke array riwayat
         $row['probabilitas_normalized'] = $probabilitasNormalisasi;
@@ -138,6 +128,7 @@
                         <thead class="bg-green-100 text-gray-700">
                             <tr>
                                 <th class="px-4 py-2 border">No</th>
+                                <th class="px-4 py-2 border">Kode Penyakit</th>
                                 <th class="px-4 py-2 border">Hasil Diagnosa</th>
                                 <th class="px-4 py-2 border">Probabilitas</th>
                                 <th class="px-4 py-2 border">Solusi</th>
@@ -149,9 +140,10 @@
                             <?php foreach ($riwayat as $index => $r): ?>
                                 <tr class="hover:bg-green-50">
                                     <td class="px-4 py-2 border"><?= $index + 1; ?></td>
-                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['hasil_diagnosa']); ?></td>
+                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['kode_penyakit'] ?? 'N/A'); ?></td>
+                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['nama_penyakit'] ?? $r['hasil_diagnosa']); ?></td>
                                     <td class="px-4 py-2 border"><?= round($r['probabilitas_normalized'], 2); ?>%</td>
-                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['solusi']); ?></td>
+                                    <td class="px-4 py-2 border"><?= htmlspecialchars($r['solusi'] ?? 'Solusi tidak tersedia'); ?></td>
                                     <td class="px-4 py-2 border">
                                         <?php 
                                         $gejalaList = json_decode($r['gejala_dipilih']);

@@ -158,6 +158,7 @@
     // Ambil hasil diagnosa (penyakit dengan probabilitas tertinggi)
     $diagnosa = null;
     $probabilitasFix = 0;
+    $kodePenyakitTertinggi = null; // Tambahkan variabel untuk menyimpan kode penyakit
     $totalProb = 0;
     
     // Pastikan ada hasil yang ditemukan
@@ -165,17 +166,18 @@
         $kodeTertinggi = array_key_first($hasil);
         $diagnosa = $hasil[$kodeTertinggi]['nama_penyakit'];
         $probabilitasFix = $hasil[$kodeTertinggi]['probabilitas'];
+        $kodePenyakitTertinggi = $kodeTertinggi; // Simpan kode penyakit dengan probabilitas tertinggi
         
         // Hitung total probabilitas untuk normalisasi
         $totalProb = array_sum(array_column($hasil, 'probabilitas'));
     }
 
-    // Simpan ke riwayat_konsultasi
+    // Simpan ke riwayat_konsultasi dengan kode penyakit
     $gejalaJson = json_encode($gejalaDipilih);
 
     if ($diagnosa) {
-        $stmt = $conn->prepare("INSERT INTO riwayat_konsultasi (id_user, gejala_dipilih, hasil_diagnosa, probabilitas) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("issd", $idUser, $gejalaJson, $diagnosa, $probabilitasFix);
+        $stmt = $conn->prepare("INSERT INTO riwayat_konsultasi (id_user, gejala_dipilih, hasil_diagnosa, probabilitas, kode_penyakit) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("issds", $idUser, $gejalaJson, $diagnosa, $probabilitasFix, $kodePenyakitTertinggi);
         $stmt->execute();
         $stmt->close();
     }
@@ -197,7 +199,7 @@
             <?php if ($diagnosa) : ?>
                 <div class="text-center mb-6">
                     <p class="text-lg mb-2">Berdasarkan gejala yang Anda pilih, kemungkinan Anda menderita:</p>
-                    <p class="text-2xl font-bold text-red-600 mb-2"><?= htmlspecialchars($diagnosa); ?></p>
+                    <p class="text-2xl font-bold text-red-600 mb-2"><?= htmlspecialchars($diagnosa); ?> (<?= htmlspecialchars($kodePenyakitTertinggi); ?>)</p>
                     <?php 
                         $probabilitasNormalisasi = ($totalProb > 0) ? ($probabilitasFix / $totalProb) * 100 : 0;
                     ?>
