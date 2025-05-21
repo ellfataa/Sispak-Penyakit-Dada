@@ -92,16 +92,16 @@
                     </a>
                 </div>
                 
-                <!-- Card 3: Informasi -->
+                <!-- Card 3: Petunjuk Penggunaan (Diperbarui) -->
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 flex flex-col items-center">
                     <div class="rounded-full bg-primary-light p-4 mb-4">
-                        <i class="fas fa-book-medical text-primary-dark text-xl"></i>
+                        <i class="fas fa-question-circle text-primary-dark text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-primary-dark mb-3">Informasi Penyakit</h3>
-                    <p class="text-gray-600 text-center mb-5 text-sm">Pelajari berbagai informasi tentang penyakit dada dan gejalanya</p>
-                    <a href="../informasi/penyakit.php" 
+                    <h3 class="text-lg font-semibold text-primary-dark mb-3">Petunjuk Penggunaan</h3>
+                    <p class="text-gray-600 text-center mb-5 text-sm">Pelajari cara menggunakan website Sistem Pakar untuk Mendiagnosa Penyakit Dada</p>
+                    <a href="../Petunjuk/index.php" 
                        class="mt-auto w-full py-2 text-center bg-primary hover:bg-primary-dark text-white rounded-md transition">
-                        Lihat Informasi
+                        Lihat Petunjuk
                     </a>
                 </div>
             </div>

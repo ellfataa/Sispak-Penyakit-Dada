@@ -146,10 +146,16 @@
                 <p class="text-gray-600 max-w-2xl mx-auto">Berikut adalah daftar konsultasi yang telah Anda lakukan sebelumnya beserta hasil diagnosa dan solusinya.</p>
             </div>
 
-            <div class="text-start mt-8 mb-6">
+            <div class="flex justify-between items-center mt-8 mb-6">
                 <a href="../Home/dashboard.php" class="inline-flex items-center px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
                     <i class="fas fa-arrow-left mr-2"></i> Kembali ke Dashboard
                 </a>
+                
+                <?php if (count($riwayat) > 0): ?>
+                <a href="export_word.php" class="inline-flex items-center px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition">
+                    <i class="fas fa-file-word mr-2"></i> Cetak Riwayat
+                </a>
+                <?php endif; ?>
             </div>
 
             <!-- Content -->
