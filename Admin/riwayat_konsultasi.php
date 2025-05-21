@@ -63,7 +63,8 @@
                 $p = $priorProbability;
                 
                 // Hitung P(ai|vj) dengan laplacian smoothing
-                $likelihood = ($nc + $m * $p) / ($n + $m);
+                // Perbaikan rumus likelihood sesuai dengan proses_konsultasi.php
+                $likelihood = (($nc + $m) * $p) / ($n + $m);
                 
                 // Kalikan posterior probability dengan likelihood
                 $posteriorProbability *= $likelihood;
@@ -95,7 +96,13 @@
             $totalProb = array_sum($hasilPerhitungan);
             
             // Normalisasi probabilitas seperti di proses_konsultasi.php
-            $probabilitasNormalisasi = ($totalProb > 0) ? ($row['probabilitas'] / $totalProb) * 100 : 0;
+            // Pastikan kode penyakit tersedia sebelum mencoba mengaksesnya
+            if (isset($row['kode_penyakit']) && isset($hasilPerhitungan[$row['kode_penyakit']])) {
+                $probabilitasNormalisasi = ($totalProb > 0) ? ($hasilPerhitungan[$row['kode_penyakit']] / $totalProb) * 100 : 0;
+            } else {
+                // Gunakan nilai probabilitas dari database dan total yang baru dihitung sebagai fallback
+                $probabilitasNormalisasi = ($totalProb > 0) ? ($row['probabilitas'] / $totalProb) * 100 : 0;
+            }
             
             // Tambahkan probabilitas ternormalisasi ke data
             $row['probabilitas_normalized'] = $probabilitasNormalisasi;

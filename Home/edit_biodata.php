@@ -8,7 +8,7 @@
     }
 
     $id_user = $_SESSION['id_user'];
-    $sql = "SELECT nama, username FROM user WHERE id_user = ?";
+    $sql = "SELECT nama, username, role FROM user WHERE id_user = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_user);
     $stmt->execute();
@@ -69,85 +69,141 @@
 <html lang="id">
     <head>
         <meta charset="UTF-8">
-        <title>Edit Biodata</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Biodata - Sistem Pakar Penyakit Dada</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                light: '#BCFFBC',
+                                DEFAULT: '#1EFEA5',
+                                dark: '#276F55',
+                            },
+                            white: '#FFFFFF',
+                        }
+                    }
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     </head>
-    <body class="bg-green-50 text-gray-800">
+    <body class="bg-gradient-to-tr from-white via-emerald-200 to-white min-h-screen flex flex-col">
 
-        <!-- Form Edit -->
-        <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow-md">
-            <h2 class="text-xl font-semibold text-green-700 mb-4">Edit Biodata</h2>
+        <main class="flex-grow container mx-auto px-4 py-8">            
+            <div class="bg-white rounded-xl shadow-lg w-full max-w-4xl mx-auto overflow-hidden">
+                <div class="flex flex-col md:flex-row">
+                    <!-- Sidebar -->
+                    <div class="md:w-1/3 bg-gradient-to-b from-primary-dark to-emerald-800 text-white p-8 flex flex-col items-center justify-center">
+                        <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center text-white mb-6">
+                            <i class="fas fa-user-edit text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2"><?= htmlspecialchars($user['nama']); ?></h3>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white mb-6">
+                            <?= htmlspecialchars($user['role']); ?>
+                        </span>
+                        <p class="text-white/80 text-center text-sm mb-4">Perbarui informasi akun Anda untuk menjaga data tetap akurat dan terkini.</p>
+                    </div>
+                    
+                    <!-- Form Content -->
+                    <div class="md:w-2/3 p-8">
+                        <h2 class="text-xl font-semibold text-primary-dark mb-6 flex items-center">
+                            <i class="fas fa-pen-to-square mr-3"></i>
+                            <span>Form Edit Biodata</span>
+                        </h2>
+                        
+                        <?php if ($success): ?>
+                            <div class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <p><?= $success ?></p>
+                                </div>
+                            </div>
+                        <?php elseif ($error): ?>
+                            <div class="mb-6 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r">
+                                <div class="flex items-center">
+                                    <i class="fas fa-exclamation-circle mr-3"></i>
+                                    <p><?= $error ?></p>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
-            <?php if ($success): ?>
-                <div class="mb-4 bg-green-100 text-green-800 px-4 py-2 rounded border border-green-300"><?= $success ?></div>
-            <?php elseif ($error): ?>
-                <div class="mb-4 bg-red-100 text-red-800 px-4 py-2 rounded border border-red-300"><?= $error ?></div>
-            <?php endif; ?>
+                        <form method="POST" onsubmit="return validateForm();" class="space-y-5">
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="fas fa-id-card text-primary-dark mr-2"></i>Nama Lengkap
+                                </label>
+                                <input type="text" name="nama" required value="<?= htmlspecialchars($user['nama']); ?>"
+                                    class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-transparent transition">
+                            </div>
 
-            <form method="POST" onsubmit="return validateForm();" class="space-y-4">
-                <div>
-                    <label class="block font-medium text-gray-700">Nama</label>
-                    <input type="text" name="nama" required value="<?= htmlspecialchars($user['nama']); ?>"
-                        class="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:ring-green-300">
-                </div>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="fas fa-user text-primary-dark mr-2"></i>Username
+                                </label>
+                                <input type="text" name="username" required value="<?= htmlspecialchars($user['username']); ?>"
+                                    class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-transparent transition">
+                            </div>
 
-                <div>
-                    <label class="block font-medium text-gray-700">Username</label>
-                    <input type="text" name="username" required value="<?= htmlspecialchars($user['username']); ?>"
-                        class="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring focus:ring-green-300">
-                </div>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="fas fa-key text-primary-dark mr-2"></i>Password Baru (opsional)
+                                </label>
+                                <div class="relative">
+                                    <input type="password" name="password" id="password"
+                                        class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-transparent transition">
+                                    <button type="button" onclick="togglePassword('password', 'eye1')" class="absolute right-3 top-3 text-gray-500">
+                                        <i id="eye1" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                <div>
-                    <label class="block font-medium text-gray-700">Password Baru (opsional)</label>
-                    <div class="relative">
-                        <input type="password" name="password" id="password"
-                            class="w-full border border-gray-300 px-3 py-2 rounded pr-10 focus:outline-none focus:ring focus:ring-green-300">
-                        <button type="button" onclick="togglePassword('password', 'eye1')" class="absolute right-2 top-2.5 text-gray-500">
-                            <svg id="eye1" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </button>
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    <i class="fas fa-check-double text-primary-dark mr-2"></i>Konfirmasi Password
+                                </label>
+                                <div class="relative">
+                                    <input type="password" name="confirm_password" id="confirm_password"
+                                        class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-dark focus:border-transparent transition">
+                                    <button type="button" onclick="togglePassword('confirm_password', 'eye2')" class="absolute right-3 top-3 text-gray-500">
+                                        <i id="eye2" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between pt-4 mt-4">
+                                <a href="biodata.php" 
+                                   class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition flex items-center">
+                                    <i class="fas fa-arrow-left mr-2"></i> Kembali
+                                </a>
+                                <button type="submit" 
+                                        class="px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition flex items-center">
+                                    <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
-                <div>
-                    <label class="block font-medium text-gray-700">Konfirmasi Password</label>
-                    <div class="relative">
-                        <input type="password" name="confirm_password" id="confirm_password"
-                            class="w-full border border-gray-300 px-3 py-2 rounded pr-10 focus:outline-none focus:ring focus:ring-green-300">
-                        <button type="button" onclick="togglePassword('confirm_password', 'eye2')" class="absolute right-2 top-2.5 text-gray-500">
-                            <svg id="eye2" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex justify-between">
-                    <a href="biodata.php" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Batal</a>
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </main>
 
         <script>
             function togglePassword(inputId, eyeId) {
                 const input = document.getElementById(inputId);
                 const eye = document.getElementById(eyeId);
+                
                 if (input.type === "password") {
                     input.type = "text";
-                    eye.classList.add("text-green-600");
+                    eye.classList.remove("fa-eye");
+                    eye.classList.add("fa-eye-slash");
+                    eye.classList.add("text-primary-dark");
                 } else {
                     input.type = "password";
-                    eye.classList.remove("text-green-600");
+                    eye.classList.remove("fa-eye-slash");
+                    eye.classList.add("fa-eye");
+                    eye.classList.remove("text-primary-dark");
                 }
             }
 
@@ -168,7 +224,6 @@
                 return true;
             }
         </script>
-
     </body>
 </html>
 

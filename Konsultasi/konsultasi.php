@@ -7,6 +7,8 @@
         exit();
     }
 
+    $nama = $_SESSION['nama'];
+
     $gejala = [];
     $sql = "SELECT * FROM gejala ORDER BY kode_gejala ASC";
     $result = $conn->query($sql);
@@ -22,57 +24,91 @@
 <html lang="id">
     <head>
         <meta charset="UTF-8">
-        <title>Konsultasi</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Konsultasi - Sistem Pakar Penyakit Dada</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                light: '#BCFFBC',
+                                DEFAULT: '#1EFEA5',
+                                dark: '#276F55',
+                            },
+                            white: '#FFFFFF',
+                        }
+                    }
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     </head>
-    <body class="bg-green-50 text-gray-800 min-h-screen">
+    <body class="bg-gradient-to-tr from-white via-emerald-200 to-white min-h-screen flex flex-col">
 
-        <nav class="flex justify-between items-center px-6 py-4 bg-green-600 text-white shadow">
-            <h1 class="text-xl font-bold">Sistem Pakar - Konsultasi</h1>
-            <div class="flex gap-4">
-                <a href="../Home/dashboard.php" class="hover:underline">Dashboard</a>
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <!-- Header -->
+            <div class="mb-8 text-center">
+                <h2 class="text-2xl font-bold text-primary-dark mb-2">Konsultasi Penyakit Dada</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Silakan pilih gejala-gejala yang Anda alami saat ini untuk mendapatkan diagnosa awal penyakit dada.</p>
             </div>
-        </nav>
 
-        <div class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded shadow-md">
-            <h2 class="text-2xl font-semibold text-green-700 mb-4 text-center">Silakan Pilih Gejala yang Anda Alami</h2>
+            <div class="text-start mt-8 mb-6">
+                <a href="../Home/dashboard.php" class="inline-flex items-center px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Kembali ke Dashboard
+                </a>
+            </div>
 
-            <form action="proses_konsultasi.php" method="post" onsubmit="return validasiForm();">
-                <div class="overflow-x-auto">
-                    <table class="w-full table-auto border border-gray-200 text-sm text-left">
-                        <thead class="bg-green-100 text-green-700 font-semibold">
-                            <tr>
-                                <th class="border px-3 py-2">No</th>
-                                <th class="border px-3 py-2">Kode Gejala</th>
-                                <th class="border px-3 py-2">Nama Gejala</th>
-                                <th class="border px-3 py-2 text-center">Pilih</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($gejala as $index => $g) : ?>
-                            <tr class="hover:bg-green-50">
-                                <td class="border px-3 py-2"><?= $index + 1; ?></td>
-                                <td class="border px-3 py-2"><?= htmlspecialchars($g['kode_gejala']); ?></td>
-                                <td class="border px-3 py-2"><?= htmlspecialchars($g['nama_gejala']); ?></td>
-                                <td class="border px-3 py-2 text-center">
-                                    <input type="checkbox" name="gejala[]" value="<?= htmlspecialchars($g['kode_gejala']); ?>" class="h-4 w-4 text-green-600">
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Form -->
+            <div class="bg-white rounded-lg shadow-sm mb-8">
+                <form action="proses_konsultasi.php" method="post" onsubmit="return validasiForm();" class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left" id="tabelGejala">
+                            <thead class="bg-primary-light text-primary-dark">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-tl-lg">No</th>
+                                    <th class="px-4 py-3">Kode</th>
+                                    <th class="px-4 py-3">Gejala</th>
+                                    <th class="px-4 py-3 rounded-tr-lg text-center">Pilih</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <?php foreach ($gejala as $index => $g) : ?>
+                                <tr class="hover:bg-gray-50 gejala-row">
+                                    <td class="px-4 py-3"><?= $index + 1; ?></td>
+                                    <td class="px-4 py-3 font-medium"><?= htmlspecialchars($g['kode_gejala']); ?></td>
+                                    <td class="px-4 py-3 gejala-nama"><?= htmlspecialchars($g['nama_gejala']); ?></td>
+                                    <td class="px-4 py-3 text-center">
+                                        <label class="inline-flex items-center justify-center">
+                                            <input type="checkbox" name="gejala[]" value="<?= htmlspecialchars($g['kode_gejala']); ?>" class="h-5 w-5 text-primary focus:ring-primary rounded">
+                                        </label>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <div class="mt-6 text-center">
-                    <button type="submit"
-                            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded">
-                        Proses Diagnosa
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div class="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+                        <div class="bg-primary-light bg-opacity-40 p-3 rounded-lg text-sm text-gray-700 flex items-start">
+                            <i class="fas fa-info-circle text-primary-dark mt-0.5 mr-2"></i>
+                            <p>Pilih semua gejala yang Anda alami saat ini. Semakin lengkap gejala yang dipilih, semakin akurat diagnosis yang dihasilkan.</p>
+                        </div>
+                        <div>
+                            <span id="selectedCount" class="text-sm text-gray-600 block mb-2 text-center">0 gejala dipilih</span>
+                            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition flex items-center justify-center">
+                                <i class="fas fa-stethoscope mr-2"></i>
+                                Proses Diagnosa
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
 
         <script>
+        // Validasi form saat submit
         function validasiForm() {
             const checkboxes = document.querySelectorAll('input[name="gejala[]"]:checked');
             if (checkboxes.length === 0) {
@@ -81,8 +117,47 @@
             }
             return true;
         }
-        </script>
 
+        // Live counter untuk jumlah gejala yang dipilih
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[name="gejala[]"]');
+            const countElement = document.getElementById('selectedCount');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateCount);
+            });
+            
+            function updateCount() {
+                const checked = document.querySelectorAll('input[name="gejala[]"]:checked').length;
+                countElement.textContent = checked + ' gejala dipilih';
+                
+                // Update warna teks berdasarkan jumlah yang dipilih
+                if (checked > 0) {
+                    countElement.classList.add('text-primary-dark');
+                    countElement.classList.remove('text-gray-600');
+                } else {
+                    countElement.classList.remove('text-primary-dark');
+                    countElement.classList.add('text-gray-600');
+                }
+            }
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchGejala');
+            searchInput.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.gejala-row');
+                
+                rows.forEach(row => {
+                    const gejalaName = row.querySelector('.gejala-nama').textContent.toLowerCase();
+                    if (gejalaName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+        </script>
     </body>
 </html>
 

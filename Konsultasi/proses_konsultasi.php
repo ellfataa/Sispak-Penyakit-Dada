@@ -108,11 +108,11 @@
             $p = $priorProbability; // P(vj) untuk penyakit ini
             
             // Hitung P(ai|vj)
-            $likelihood = ($nc + $m * $p) / ($n + $m);
+            $likelihood = (($nc + $m) * $p) / ($n + $m);
             $dataPenyakit['likelihood'][$gejala] = $likelihood;
             
             // Log detail perhitungan
-            $dataPenyakit['detail_perhitungan'][] = "P($gejala|$kodePenyakit) = ($nc + $m * $p) / ($n + $m) = " . number_format($likelihood, 4);
+            $dataPenyakit['detail_perhitungan'][] = "P($gejala|$kodePenyakit) = (($nc + $m) * $p) / ($n + $m) = " . number_format($likelihood, 4);
         }
     }
 
@@ -188,106 +188,198 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Hasil Diagnosa</title>
+        <title>Hasil Diagnosa - Sistem Pakar Penyakit Dada</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                light: '#BCFFBC',
+                                DEFAULT: '#1EFEA5',
+                                dark: '#276F55',
+                            },
+                            white: '#FFFFFF',
+                        }
+                    }
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     </head>
-    <body class="bg-green-50 text-gray-800 min-h-screen">
+    <body class="bg-gradient-to-tr from-white via-emerald-200 to-white min-h-screen flex flex-col">
 
-        <div class="max-w-4xl mx-auto my-10 bg-white p-6 rounded shadow-md">
-            <h2 class="text-2xl font-semibold text-green-700 mb-4 text-center">Hasil Diagnosa</h2>
-
-            <?php if ($diagnosa) : ?>
-                <div class="text-center mb-6">
-                    <p class="text-lg mb-2">Berdasarkan gejala yang Anda pilih, kemungkinan Anda menderita:</p>
-                    <p class="text-2xl font-bold text-red-600 mb-2"><?= htmlspecialchars($diagnosa); ?> (<?= htmlspecialchars($kodePenyakitTertinggi); ?>)</p>
-                    <?php 
-                        $probabilitasNormalisasi = ($totalProb > 0) ? ($probabilitasFix / $totalProb) * 100 : 0;
-                    ?>
-                    <p class="text-green-700 mb-4">Probabilitas: <strong><?= round($probabilitasNormalisasi, 2); ?>%</strong></p>
-                    
-                    <div class="mt-4 bg-yellow-50 p-4 rounded border border-yellow-200 text-left">
-                        <h4 class="font-semibold text-yellow-700 mb-2">Gejala yang Anda Pilih:</h4>
-                        <ul class="list-disc pl-5 space-y-1">
-                            <?php foreach ($gejalaDipilih as $gejala): ?>
-                                <li><?= htmlspecialchars(isset($daftarGejala[$gejala]) ? $daftarGejala[$gejala] : $gejala); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
+        <main class="flex-grow container mx-auto px-4 py-8 max-w-full">
+            <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <!-- Header Section -->
+                <div class="bg-primary-dark text-white p-6 text-center">
+                    <h2 class="text-2xl font-bold">Hasil Diagnosa</h2>
                 </div>
 
-                <div class="mt-8">
-                    <h3 class="text-xl font-semibold text-green-700 mb-4">Detail Perhitungan Naive Bayes:</h3>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border border-gray-200">
-                            <thead class="bg-green-100">
-                                <tr>
-                                    <th class="py-2 px-4 border-b">Penyakit</th>
-                                    <th class="py-2 px-4 border-b">Probabilitas</th>
-                                    <th class="py-2 px-4 border-b">Detail</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($hasil as $kodePenyakit => $data): ?>
-                                <tr class="<?= ($data['nama_penyakit'] === $diagnosa) ? 'bg-green-100' : '' ?>">
-                                    <td class="py-2 px-4 border-b font-medium"><?= htmlspecialchars($data['nama_penyakit']); ?> (<?= htmlspecialchars($kodePenyakit); ?>)</td>
-                                    <td class="py-2 px-4 border-b text-center">
-                                        <?php 
-                                            $normProb = ($totalProb > 0) ? ($data['probabilitas'] / $totalProb) * 100 : 0;
-                                            echo round($normProb, 2) . '%'; 
-                                        ?>
-                                    </td>
-                                    <td class="py-2 px-4 border-b text-sm">
-                                        <div class="space-y-1">
-                                            <?php foreach ($data['detail'] as $detailItem): ?>
-                                                <div><?= $detailItem; ?></div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </td>
-                                </tr>
+                <?php if ($diagnosa) : ?>
+                    <!-- Main Diagnosis Section -->
+                    <div class="p-6 border-b">
+                        <div class="text-center mb-6">
+                            <div class="mx-auto w-20 h-20 bg-primary-light rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-stethoscope text-primary-dark text-3xl"></i>
+                            </div>
+                            <p class="text-gray-600 mb-3">Berdasarkan gejala yang Anda pilih, kemungkinan Anda menderita:</p>
+                            <h3 class="text-3xl font-bold text-primary-dark mb-3"><?= htmlspecialchars($diagnosa); ?> <span class="text-sm font-normal text-gray-500">(<?= htmlspecialchars($kodePenyakitTertinggi); ?>)</span></h3>
+                            
+                            <?php 
+                                $probabilitasNormalisasi = ($totalProb > 0) ? ($probabilitasFix / $totalProb) * 100 : 0;
+                            ?>
+                            
+                            <!-- Probability Bar -->
+                            <div class="w-full bg-gray-200 rounded-full h-5 my-6 max-w-lg mx-auto">
+                                <div class="bg-primary h-5 rounded-full" style="width: <?= round($probabilitasNormalisasi, 2); ?>%"></div>
+                            </div>
+                            <p class="text-lg text-primary-dark">Tingkat Probabilitas: <strong><?= round($probabilitasNormalisasi, 2); ?>%</strong></p>
+                        </div>
+                        
+                        <!-- Selected Symptoms Box -->
+                        <div class="mt-8 bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+                            <div class="flex items-center text-primary-dark mb-4">
+                                <i class="fas fa-clipboard-list mr-3 text-xl"></i>
+                                <h4 class="font-semibold text-lg">Gejala yang Anda Pilih:</h4>
+                            </div>
+                            <ul class="list-disc pl-8 space-y-2 text-gray-700">
+                                <?php foreach ($gejalaDipilih as $gejala): ?>
+                                    <li><?= htmlspecialchars(isset($daftarGejala[$gejala]) ? $daftarGejala[$gejala] : $gejala); ?></li>
                                 <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="mt-8 p-4 bg-blue-50 rounded border border-blue-200">
-                    <h4 class="font-semibold text-blue-700 mb-2">Keterangan Metode Naive Bayes:</h4>
-                    <ul class="list-disc pl-5 space-y-1 text-sm">
-                        <li><strong>Tahap 1:</strong> Menentukan nilai nc untuk setiap class penyakit</li>
-                        <li><strong>Tahap 2:</strong> Menghitung nilai P(ai|vj) dan P(vj)</li>  
-                        <li><strong>Tahap 3:</strong> Menghitung nilai P(ai|vj) × P(vj) untuk setiap penyakit</li>
-                        <li><strong>Tahap 4:</strong> Menentukan hasil klasifikasi yaitu penyakit dengan probabilitas tertinggi</li>
-                    </ul>
+
+                    <!-- Collapsible Details Section -->
+                    <div class="p-6 border-b">
+                        <button id="toggleDetails" class="flex items-center justify-between w-full text-left text-primary-dark font-semibold focus:outline-none p-2 hover:bg-emerald-50 rounded">
+                            <div class="flex items-center">
+                                <i class="fas fa-calculator mr-3 text-xl"></i>
+                                <span class="text-lg">Detail Perhitungan Naive Bayes</span>
+                            </div>
+                            <i id="detailsIcon" class="fas fa-chevron-down transform transition-transform duration-300"></i>
+                        </button>
+                        
+                        <div id="detailsContent" class="mt-6 hidden">
+                            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr class="bg-emerald-50 text-primary-dark">
+                                            <th class="py-4 px-6 border-b text-left">Penyakit</th>
+                                            <th class="py-4 px-6 border-b text-center">Probabilitas</th>
+                                            <th class="py-4 px-6 border-b text-left">Detail</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($hasil as $kodePenyakit => $data): ?>
+                                        <tr class="<?= ($data['nama_penyakit'] === $diagnosa) ? 'bg-emerald-50' : 'hover:bg-gray-50' ?> transition">
+                                            <td class="py-4 px-6 border-b font-medium">
+                                                <div class="flex items-center">
+                                                    <?php if ($data['nama_penyakit'] === $diagnosa): ?>
+                                                        <i class="fas fa-check-circle text-primary-dark mr-2"></i>
+                                                    <?php endif; ?>
+                                                    <?= htmlspecialchars($data['nama_penyakit']); ?> 
+                                                    <span class="text-xs text-gray-500 ml-1">(<?= htmlspecialchars($kodePenyakit); ?>)</span>
+                                                </div>
+                                            </td>
+                                            <td class="py-4 px-6 border-b text-center">
+                                                <?php 
+                                                    $normProb = ($totalProb > 0) ? ($data['probabilitas'] / $totalProb) * 100 : 0;
+                                                    echo round($normProb, 2) . '%'; 
+                                                ?>
+                                            </td>
+                                            <td class="py-4 px-6 border-b text-sm">
+                                                <div class="space-y-2 text-gray-700">
+                                                    <?php foreach ($data['detail'] as $detailItem): ?>
+                                                        <div class="leading-relaxed"><?= $detailItem; ?></div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <h4 class="font-semibold text-blue-700 mt-4 mb-2">Keterangan Rumus:</h4>
-                    <ul class="list-disc pl-5 space-y-1 text-sm">
-                        <li><strong>nc</strong> = Jumlah record pada data learning yang penyakit = vj dan gejala = ai (bernilai 1 jika gejala ada pada penyakit, 0 jika tidak)</li>
-                        <li><strong>n</strong> = Selalu bernilai 1 (karena gejala bersifat biner)</li>
-                        <li><strong>m</strong> = Jumlah seluruh gejala</li>
-                        <li><strong>p</strong> = Prior probability sama dengan nilai P(vj)</li>
-                        <li><strong>P(vj)</strong> = Prior probability untuk tiap penyakit (1/jumlah penyakit)</li>
-                        <li><strong>P(ai|vj)</strong> = Likelihood gejala terhadap penyakit = (nc + m*p) / (n + m)</li>
-                        <li><strong>Hasil akhir</strong> = P(vj) × P(a1|vj) × P(a2|vj) × ... × P(an|vj)</li>
-                    </ul>
-                </div>
-            <?php else : ?>
-                <div class="text-center p-6 bg-red-50 rounded border border-red-200">
-                    <p class="text-red-600 text-lg">Gejala yang dipilih tidak cukup untuk menentukan penyakit.</p>
-                    <p class="mt-2">Silakan pilih lebih banyak gejala untuk hasil yang lebih akurat.</p>
-                </div>
-            <?php endif; ?>
+                    <!-- Information Box -->
+                    <div class="p-6">
+                        <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                            <div class="flex items-center text-blue-700 mb-4">
+                                <i class="fas fa-info-circle mr-3 text-xl"></i>
+                                <h4 class="font-semibold text-lg">Keterangan Metode Naive Bayes:</h4>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-medium text-blue-700 mb-3">Tahapan Perhitungan:</h5>
+                                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                                        <li><strong>Tahap 1:</strong> Menentukan nilai nc untuk setiap class penyakit</li>
+                                        <li><strong>Tahap 2:</strong> Menghitung nilai P(ai|vj) dan P(vj)</li>  
+                                        <li><strong>Tahap 3:</strong> Menghitung nilai P(ai|vj) × P(vj) untuk setiap penyakit</li>
+                                        <li><strong>Tahap 4:</strong> Menentukan hasil klasifikasi yaitu penyakit dengan probabilitas tertinggi</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-blue-700 mb-3">Keterangan Rumus:</h5>
+                                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                                        <li><strong>nc</strong> = Jumlah record pada data learning penyakit dan gejala</li>
+                                        <li><strong>n</strong> = Selalu bernilai 1 (karena gejala bersifat biner)</li>
+                                        <li><strong>m</strong> = Jumlah seluruh gejala</li>
+                                        <li><strong>p</strong> = Prior probability sama dengan nilai P(vj)</li>
+                                        <li><strong>P(vj)</strong> = Prior probability untuk tiap penyakit (1/jumlah penyakit)</li>
+                                        <li><strong>P(ai|vj)</strong> = Likelihood gejala terhadap penyakit ((nc + m) *p) / (n + m)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Disclaimer -->
+                        <div class="flex items-start mt-5 text-sm text-gray-600 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mt-0.5 mr-3 text-lg"></i>
+                            <p>Hasil diagnosa ini hanya perkiraan awal berdasarkan gejala yang Anda pilih. Untuk penanganan medis yang tepat, silakan konsultasikan dengan dokter.</p>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <!-- No Results Section -->
+                    <div class="p-8 text-center">
+                        <div class="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-5">
+                            <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-red-500 mb-3">Diagnosa Tidak Dapat Ditentukan</h3>
+                        <p class="text-gray-600 mb-6 max-w-lg mx-auto">Gejala yang dipilih tidak cukup untuk menentukan penyakit. Silakan pilih lebih banyak gejala untuk hasil yang lebih akurat.</p>
+                    </div>
+                <?php endif; ?>
 
-            <div class="text-center mt-8">
-                <a href="konsultasi.php" class="inline-block px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition duration-200">
-                    Konsultasi Lagi
-                </a>
-                <a href="../Home/dashboard.php" class="inline-block px-5 py-2 ml-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-200">
-                    Kembali ke Beranda
-                </a>
+                <!-- Action Buttons -->
+                <div class="bg-gray-50 p-6 flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="konsultasi.php" class="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-md transition duration-200 text-lg font-medium">
+                        <i class="fas fa-stethoscope mr-2"></i> Konsultasi Lagi
+                    </a>
+                    <a href="../Home/dashboard.php" class="inline-flex items-center justify-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition duration-200 text-lg font-medium">
+                        <i class="fas fa-home mr-2"></i> Kembali ke Beranda
+                    </a>
+                </div>
             </div>
-        </div>
+        </main>
 
+        <!-- Script for collapsible details -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toggleBtn = document.getElementById('toggleDetails');
+                const content = document.getElementById('detailsContent');
+                const icon = document.getElementById('detailsIcon');
+                
+                if (toggleBtn && content && icon) {
+                    toggleBtn.addEventListener('click', () => {
+                        content.classList.toggle('hidden');
+                        icon.classList.toggle('rotate-180');
+                    });
+                }
+            });
+        </script>
     </body>
 </html>
 
