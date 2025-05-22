@@ -7,11 +7,13 @@
         exit();
     }
 
+    // Mengambil data penyakit berdasarkan kode
     if (!isset($_GET['kode'])) {
         echo "Kode penyakit tidak ditemukan!";
         exit();
     }
 
+    // Proses hapus data penyakit
     $kode = $_GET['kode'];
     $stmt = $conn->prepare("DELETE FROM penyakit WHERE kode_penyakit = ?");
     $stmt->bind_param("s", $kode);

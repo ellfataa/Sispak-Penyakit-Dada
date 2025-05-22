@@ -7,12 +7,14 @@
         exit();
     }
 
+    // Mengambil data user (nama, username, password, role) dari form yang diisi
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = $_POST['nama'];
         $username = $_POST['username'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $role = $_POST['role'];
 
+        // Insert data user ke dalam database
         $stmt = $conn->prepare("INSERT INTO user (nama, username, password, role) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $nama, $username, $password, $role);
 

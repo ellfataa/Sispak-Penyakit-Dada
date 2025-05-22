@@ -40,30 +40,30 @@
         $relasiPenyakitGejala[$row['kode_penyakit']][] = $row['kode_gejala'];
     }
 
-    // Fungsi untuk mendapatkan probabilitas masing-masing penyakit untuk perhitungan normalisasi
-    function hitungProbabilitasPenyakit($gejalaDipilih, $relasiPenyakitGejala, $totalPenyakit, $totalGejala, $penyakit) {
+    // FUNGSI STANDAR UNTUK PERHITUNGAN PROBABILITAS NAIVE BAYES
+    function hitungProbabilitasNaiveBayes($gejalaDipilih, $relasiPenyakitGejala, $totalPenyakit, $totalGejala, $penyakit) {
         $hasilPerhitungan = [];
         
         // Hitung probabilitas untuk setiap penyakit
         foreach ($penyakit as $kodePenyakit => $namaPenyakit) {
-            // Prior probability untuk setiap penyakit (1/jumlah_penyakit)
+            // TAHAP 1: Prior probability untuk setiap penyakit (sama untuk semua penyakit)
             $priorProbability = 1 / $totalPenyakit;
             
-            // Inisialisasi dengan prior probability
+            // TAHAP 2: Inisialisasi posterior probability dengan prior probability
             $posteriorProbability = $priorProbability;
             
-            // Kalikan dengan likelihood untuk setiap gejala yang dipilih
+            // TAHAP 3: Kalikan dengan likelihood untuk setiap gejala yang dipilih
             foreach ($gejalaDipilih as $gejala) {
                 // Nilai nc (1 jika gejala ada pada penyakit, 0 jika tidak)
                 $nc = in_array($gejala, $relasiPenyakitGejala[$kodePenyakit] ?? []) ? 1 : 0;
                 
                 // Parameter untuk perhitungan likelihood
-                $n = 1; // Selalu 1 untuk gejala biner
-                $m = $totalGejala;
-                $p = $priorProbability;
+                $n = 1;  // Selalu 1 untuk gejala biner
+                $m = $totalGejala; // Total gejala dalam database
+                $p = $priorProbability; // Prior probability
                 
-                // Hitung P(ai|vj) dengan laplacian smoothing
-                // Perbaikan rumus likelihood sesuai dengan proses_konsultasi.php
+                // Hitung P(ai|vj) menggunakan Laplacian smoothing
+                // Rumus: P(gejala|penyakit) = ((nc + m) * p) / (n + m)
                 $likelihood = (($nc + $m) * $p) / ($n + $m);
                 
                 // Kalikan posterior probability dengan likelihood
@@ -74,6 +74,19 @@
         }
         
         return $hasilPerhitungan;
+    }
+
+    // FUNGSI UNTUK NORMALISASI PROBABILITAS KE PERSENTASE
+    function normalisasiProbabilitas($hasilPerhitungan, $kodePenyakitTarget) {
+        // Hitung total probabilitas untuk normalisasi
+        $totalProb = array_sum($hasilPerhitungan);
+        
+        // Normalisasi ke persentase
+        if ($totalProb > 0 && isset($hasilPerhitungan[$kodePenyakitTarget])) {
+            return ($hasilPerhitungan[$kodePenyakitTarget] / $totalProb) * 100;
+        }
+        
+        return 0;
     }
 
     // Ambil riwayat konsultasi dari database beserta nama user
@@ -89,18 +102,21 @@
             // Dapatkan gejala yang dipilih
             $gejalaDipilih = json_decode($row['gejala_dipilih']);
             
-            // Hitung probabilitas untuk semua penyakit
-            $hasilPerhitungan = hitungProbabilitasPenyakit($gejalaDipilih, $relasiPenyakitGejala, $totalPenyakit, $totalGejala, $penyakit);
+            // Hitung probabilitas untuk semua penyakit menggunakan fungsi standar
+            $hasilPerhitungan = hitungProbabilitasNaiveBayes(
+                $gejalaDipilih, 
+                $relasiPenyakitGejala, 
+                $totalPenyakit, 
+                $totalGejala, 
+                $penyakit
+            );
             
-            // Hitung total probabilitas untuk normalisasi
-            $totalProb = array_sum($hasilPerhitungan);
-            
-            // Normalisasi probabilitas seperti di proses_konsultasi.php
-            // Pastikan kode penyakit tersedia sebelum mencoba mengaksesnya
-            if (isset($row['kode_penyakit']) && isset($hasilPerhitungan[$row['kode_penyakit']])) {
-                $probabilitasNormalisasi = ($totalProb > 0) ? ($hasilPerhitungan[$row['kode_penyakit']] / $totalProb) * 100 : 0;
+            // Normalisasi probabilitas untuk penyakit yang didiagnosis
+            if (isset($row['kode_penyakit'])) {
+                $probabilitasNormalisasi = normalisasiProbabilitas($hasilPerhitungan, $row['kode_penyakit']);
             } else {
-                // Gunakan nilai probabilitas dari database dan total yang baru dihitung sebagai fallback
+                // Fallback jika kode penyakit tidak tersedia
+                $totalProb = array_sum($hasilPerhitungan);
                 $probabilitasNormalisasi = ($totalProb > 0) ? ($row['probabilitas'] / $totalProb) * 100 : 0;
             }
             

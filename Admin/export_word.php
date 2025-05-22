@@ -7,6 +7,7 @@
         die("Akses ditolak.");
     }
 
+    // Membuat layout (render) untuk export ke Word
     header("Content-type: application/vnd.ms-word");
     header("Content-Disposition: attachment;Filename=riwayat_konsultasi.doc");
 
@@ -15,6 +16,7 @@
     echo "<table border='1' cellpadding='5' cellspacing='0'>";
     echo "<tr><th>No</th><th>Nama User</th><th>Hasil Diagnosa</th><th>Gejala Dipilih</th><th>Waktu</th></tr>";
 
+    // Mengambil data riwayat konsultasi yang akan diexport
     $sql = "SELECT r.*, u.nama FROM riwayat_konsultasi r JOIN user u ON r.id_user = u.id_user ORDER BY r.waktu_konsultasi DESC";
     $result = $conn->query($sql);
     $no = 1;

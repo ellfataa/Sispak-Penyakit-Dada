@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data penyakit berdasarkan kode
     if (!isset($_GET['kode'])) {
         echo "Kode gejala tidak ditemukan!";
         exit();
@@ -14,6 +15,7 @@
 
     $kode = $_GET['kode'];
 
+    // Proses hapus data gejala
     $stmt = $conn->prepare("DELETE FROM gejala WHERE kode_gejala = ?");
     $stmt->bind_param("s", $kode);
     $stmt->execute();

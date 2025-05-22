@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data user berdasarkan ID
     $id = $_GET['id'] ?? null;
     if (!$id) {
         echo "ID tidak valid.";
@@ -23,6 +24,7 @@
         exit();
     }
 
+    // Proses update data user (apabila berhasil diarahkan ke halaman user.php)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = $_POST['nama'];
         $username = $_POST['username'];
@@ -54,7 +56,6 @@
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-purple-50 min-h-screen">
-
         <div class="max-w-xl mx-auto mt-8 bg-white p-6 rounded shadow">
             <h2 class="text-2xl font-bold mb-4 text-purple-800">Edit User</h2>
             <form method="POST" class="space-y-4">

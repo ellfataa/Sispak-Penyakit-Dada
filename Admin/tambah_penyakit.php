@@ -7,12 +7,14 @@
         exit();
     }
 
+    // Mengambil data penyakit (kode, nama, deskripsi, solusi) dari form yang diisi
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $kode = $_POST['kode_penyakit'];
         $nama = $_POST['nama_penyakit'];
         $deskripsi = $_POST['deskripsi'];
         $solusi = $_POST['solusi'];
 
+        // Insert data penyakit (kode, nama, deskripsi, solusi) ke dalam database
         $sql = "INSERT INTO penyakit (kode_penyakit, nama_penyakit, deskripsi, solusi) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssss", $kode, $nama, $deskripsi, $solusi);
@@ -32,6 +34,8 @@
         <meta charset="UTF-8">
         <title>Tambah Penyakit</title>
         <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- JS untuk menampilkan alert -->
         <script>
             window.onload = () => {
                 const params = new URLSearchParams(window.location.search);

@@ -37,7 +37,6 @@
     <body class="bg-gradient-to-tr from-white via-emerald-200 to-white min-h-screen flex flex-col">
 
         <main class="flex-grow container mx-auto px-4 py-8">
-            <!-- Header -->
             <div class="mb-8 text-center">
                 <h2 class="text-2xl font-bold text-primary-dark mb-2">Petunjuk Penggunaan Sistem</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Berikut adalah panduan lengkap cara menggunakan Sistem Pakar Penyakit Dada</p>
@@ -49,7 +48,6 @@
                 </a>
             </div>
             
-            <!-- Main Content -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-8">
                 <!-- Section 1: Pendahuluan -->
                 <div class="mb-8">

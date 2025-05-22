@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data penyakit berdasarkan kode
     $penyakit = [];
     $sql = "SELECT * FROM penyakit ORDER BY kode_penyakit ASC";
     $result = $conn->query($sql);
@@ -50,6 +51,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Looping untuk mengambil dan menampilkan data penyakit (kode dan nama) -->
                         <?php foreach ($penyakit as $index => $p): ?>
                             <tr class="hover:bg-purple-50">
                                 <td class="px-4 py-2 border-b text-sm"><?= $index + 1; ?></td>

@@ -9,6 +9,7 @@
 
     $nama = $_SESSION['nama'];
 
+    // Mengambil data gejala
     $gejala = [];
     $sql = "SELECT * FROM gejala ORDER BY kode_gejala ASC";
     $result = $conn->query($sql);
@@ -74,6 +75,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
+                                <!-- Menampilkan data gejala (kode dan nama) -->
                                 <?php foreach ($gejala as $index => $g) : ?>
                                 <tr class="hover:bg-gray-50 gejala-row">
                                     <td class="px-4 py-3"><?= $index + 1; ?></td>
@@ -141,7 +143,7 @@
                 }
             }
             
-            // Search functionality
+            // Search functionality 
             const searchInput = document.getElementById('searchGejala');
             searchInput.addEventListener('keyup', function() {
                 const searchTerm = this.value.toLowerCase();

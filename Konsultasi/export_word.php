@@ -30,7 +30,7 @@
         $daftarGejala[$row['kode_gejala']] = $row['nama_gejala'];
     }
 
-    // Set header untuk Word document
+    // Membuat layout (render) untuk export ke Word
     header("Content-Type: application/vnd.ms-word");
     header("Content-Disposition: attachment;Filename=riwayat_konsultasi_" . $nama . ".doc");
 

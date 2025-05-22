@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data gejala berasarkan kode
     $gejala = [];
     $sql = "SELECT * FROM gejala ORDER BY kode_gejala ASC";
     $result = $conn->query($sql);
@@ -51,6 +52,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Memanggil dan menampilkan data gejala (kode dan nama) -->
                         <?php foreach ($gejala as $index => $g): ?>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-2 border"><?= $index + 1; ?></td>

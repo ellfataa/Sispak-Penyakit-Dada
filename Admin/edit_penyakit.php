@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data penyakit berdasarkan kode
     if (!isset($_GET['kode'])) {
         echo "Kode penyakit tidak ditemukan!";
         exit();
@@ -24,6 +25,7 @@
         exit();
     }
 
+    // Proses update data penyakit (apabila berhasil diarahkan ke halaman penyakit.php)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = $_POST['nama_penyakit'];
         $deskripsi = $_POST['deskripsi'];

@@ -7,22 +7,43 @@
         exit();
     }
 
+    // Mengambil data gejala
     $gejala = [];
     $resultGejala = $conn->query("SELECT * FROM gejala ORDER BY kode_gejala ASC");
     while ($row = $resultGejala->fetch_assoc()) {
         $gejala[] = $row;
     }
 
+    // Mengambil data penyakit
     $penyakit = [];
     $resultPenyakit = $conn->query("SELECT * FROM penyakit ORDER BY kode_penyakit ASC");
     while ($row = $resultPenyakit->fetch_assoc()) {
         $penyakit[] = $row;
     }
 
+    // Mengambil data user
     $user = [];
     $resultUser = $conn->query("SELECT * FROM user ORDER BY id_user ASC");
     while ($row = $resultUser->fetch_assoc()) {
         $user[] = $row;
+    }
+
+    // JOIN untuk Relasi antara penyakit dan gejala
+    $penyakitGejala = [];
+    $resultPenyakitGejala = $conn->query("
+        SELECT 
+            pg.id,
+            pg.kode_penyakit,
+            pg.kode_gejala,
+            p.nama_penyakit,
+            g.nama_gejala
+        FROM penyakit_gejala pg
+        LEFT JOIN penyakit p ON pg.kode_penyakit = p.kode_penyakit
+        LEFT JOIN gejala g ON pg.kode_gejala = g.kode_gejala
+        ORDER BY pg.kode_penyakit ASC, pg.kode_gejala ASC
+    ");
+    while ($row = $resultPenyakitGejala->fetch_assoc()) {
+        $penyakitGejala[] = $row;
     }
 ?>
 
@@ -48,6 +69,7 @@
             <h1 class="text-2xl font-semibold mb-6">Dashboard Admin</h1>
 
             <?php
+            // Render untuk daata gejala, penyakit, dan user
             function render_section($title, $data, $headers, $link, $columns) {
                 echo '
                 <div class="mb-10">
@@ -74,8 +96,38 @@
                 echo '</tbody></table></div></div>';
             }
 
+            // Render untuk data relasi penyakit-gejala
+            function render_penyakit_gejala_section($title, $data, $headers, $link) {
+                echo '
+                <div class="mb-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-lg font-bold text-purple-800">' . $title . '</h2>
+                        <a href="' . $link . '" class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-1 rounded shadow text-sm">Kelola</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-300 shadow-sm rounded">
+                            <thead class="bg-purple-100 text-purple-800">
+                                <tr>';
+                foreach ($headers as $head) {
+                    echo '<th class="p-2 border-b text-left text-sm">' . $head . '</th>';
+                }
+                echo '</tr></thead><tbody>';
+                foreach ($data as $i => $row) {
+                    echo '<tr class="hover:bg-purple-50">';
+                    echo '<td class="p-2 border-b text-sm">' . ($i + 1) . '</td>';
+                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['kode_penyakit']) . '</td>';
+                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['nama_penyakit'] ?? '-') . '</td>';
+                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['kode_gejala']) . '</td>';
+                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['nama_gejala'] ?? '-') . '</td>';
+                    echo '</tr>';
+                }
+                echo '</tbody></table></div></div>';
+            }
+
+            // Memanggil fungsi render_section untuk setiap bagian agar ditampilkan
             render_section('Data Gejala', $gejala, ['No', 'Kode Gejala', 'Nama Gejala'], 'gejala.php', ['kode_gejala', 'nama_gejala']);
             render_section('Data Penyakit', $penyakit, ['No', 'Kode Penyakit', 'Nama Penyakit'], 'penyakit.php', ['kode_penyakit', 'nama_penyakit']);
+            render_penyakit_gejala_section('Data Aturan Penyakit-Gejala', $penyakitGejala, ['No', 'Kode Penyakit', 'Nama Penyakit', 'Kode Gejala', 'Nama Gejala'], 'penyakit_gejala.php');
             render_section('Data User', $user, ['No', 'Nama', 'Username', 'Role'], 'user.php', ['nama', 'username', 'role']);
             ?>
         </div>

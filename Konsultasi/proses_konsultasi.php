@@ -96,7 +96,7 @@
         // Hitung likelihood P(ai|vj) untuk setiap gejala yang dipilih
         $dataPenyakit['likelihood'] = [];
         foreach ($gejalaDipilih as $gejala) {
-            // Rumus: P(gejala|penyakit) = (nc + m*p) / (n + m)
+            // Rumus: P(gejala|penyakit) = ((nc + m)*p) / (n + m)
             // nc = jumlah record pada data learning yang v = vj dan a = ai
             // n = selalu bernilai 1 (karena gejala bersifat biner)
             // m = jumlah seluruh gejala
@@ -212,13 +212,12 @@
 
         <main class="flex-grow container mx-auto px-4 py-8 max-w-full">
             <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-                <!-- Header Section -->
                 <div class="bg-primary-dark text-white p-6 text-center">
                     <h2 class="text-2xl font-bold">Hasil Diagnosa</h2>
                 </div>
 
                 <?php if ($diagnosa) : ?>
-                    <!-- Main Diagnosis Section -->
+                    <!-- Menampilkan hasil DIAGNOSA -->
                     <div class="p-6 border-b">
                         <div class="text-center mb-6">
                             <div class="mx-auto w-20 h-20 bg-primary-light rounded-full flex items-center justify-center mb-4">
@@ -238,7 +237,7 @@
                             <p class="text-lg text-primary-dark">Tingkat Probabilitas: <strong><?= round($probabilitasNormalisasi, 2); ?>%</strong></p>
                         </div>
                         
-                        <!-- Selected Symptoms Box -->
+                        <!-- Menampilkan data gejala yang sudah dipilih -->
                         <div class="mt-8 bg-yellow-50 p-6 rounded-lg border border-yellow-200">
                             <div class="flex items-center text-primary-dark mb-4">
                                 <i class="fas fa-clipboard-list mr-3 text-xl"></i>
@@ -252,7 +251,7 @@
                         </div>
                     </div>
 
-                    <!-- Collapsible Details Section -->
+                    <!-- Menampilkan detail perhitungan Naive Bayes -->
                     <div class="p-6 border-b">
                         <button id="toggleDetails" class="flex items-center justify-between w-full text-left text-primary-dark font-semibold focus:outline-none p-2 hover:bg-emerald-50 rounded">
                             <div class="flex items-center">
@@ -326,7 +325,7 @@
                                     <h5 class="font-medium text-blue-700 mb-3">Keterangan Rumus:</h5>
                                     <ul class="list-disc pl-6 space-y-2 text-gray-700">
                                         <li><strong>nc</strong> = Jumlah record pada data learning penyakit dan gejala</li>
-                                        <li><strong>n</strong> = Selalu bernilai 1 (karena gejala bersifat biner)</li>
+                                        <li><strong>n</strong> = 1</li>
                                         <li><strong>m</strong> = Jumlah seluruh gejala</li>
                                         <li><strong>p</strong> = Prior probability sama dengan nilai P(vj)</li>
                                         <li><strong>P(vj)</strong> = Prior probability untuk tiap penyakit (1/jumlah penyakit)</li>
@@ -365,7 +364,7 @@
             </div>
         </main>
 
-        <!-- Script for collapsible details -->
+        <!-- Script ketika ingin melihat detail perhitungan (collapse) -->
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const toggleBtn = document.getElementById('toggleDetails');

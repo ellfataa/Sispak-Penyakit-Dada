@@ -7,10 +7,12 @@
         exit();
     }
 
+    // Mengambil data gejala (kode dan nama) dari form yang diisi
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $kode = trim($_POST['kode_gejala']);
         $nama = trim($_POST['nama_gejala']);
 
+        // Insert data gejala (kode dan nama gejala) ke database
         $sql = "INSERT INTO gejala (kode_gejala, nama_gejala) VALUES (?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $kode, $nama);
@@ -30,6 +32,8 @@
         <meta charset="UTF-8">
         <title>Tambah Gejala</title>
         <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- JS untuk menampilkan alert -->
         <script>
             window.onload = () => {
                 const params = new URLSearchParams(window.location.search);

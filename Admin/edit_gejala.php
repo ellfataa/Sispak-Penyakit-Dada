@@ -12,6 +12,7 @@
         exit();
     }
 
+    // Mengambil data gejala berdasarkan kode
     $kode = $_GET['kode'];
     $stmt = $conn->prepare("SELECT * FROM gejala WHERE kode_gejala = ?");
     $stmt->bind_param("s", $kode);
@@ -24,6 +25,7 @@
         exit();
     }
 
+    // Proses update data gejala (apabila berhasil diarahkan ke halaman gejala.php)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama = $_POST['nama_gejala'];
         $stmt = $conn->prepare("UPDATE gejala SET nama_gejala=? WHERE kode_gejala=?");

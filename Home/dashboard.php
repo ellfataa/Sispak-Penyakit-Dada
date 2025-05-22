@@ -58,15 +58,14 @@
         </nav>
 
         <main class="flex-grow container mx-auto px-4 py-8">
-            <!-- Welcome Header -->
             <div class="mb-8 text-center">
                 <h2 class="text-2xl font-bold text-primary-dark mb-2">Selamat Datang di Sistem Pakar Penyakit Dada</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Sistem ini akan membantu Anda melakukan diagnosa awal penyakit dada. Pilih salah satu menu di bawah untuk memulai.</p>
             </div>
             
-            <!-- Main Options -->
+            <!-- Menu Dashboard -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Card 1: Diagnosa -->
+                <!-- Diagnosa -->
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 flex flex-col items-center">
                     <div class="rounded-full bg-primary-light p-4 mb-4">
                         <i class="fas fa-stethoscope text-primary-dark text-xl"></i>
@@ -79,7 +78,7 @@
                     </a>
                 </div>
                 
-                <!-- Card 2: Riwayat -->
+                <!-- Riwayat -->
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 flex flex-col items-center">
                     <div class="rounded-full bg-primary-light p-4 mb-4">
                         <i class="fas fa-clipboard-list text-primary-dark text-xl"></i>
@@ -92,7 +91,7 @@
                     </a>
                 </div>
                 
-                <!-- Card 3: Petunjuk Penggunaan (Diperbarui) -->
+                <!-- Petunjuk Penggunaan Website -->
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6 flex flex-col items-center">
                     <div class="rounded-full bg-primary-light p-4 mb-4">
                         <i class="fas fa-question-circle text-primary-dark text-xl"></i>

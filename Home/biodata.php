@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Ambil data user berdasarkan ID
     $id_user = $_SESSION['id_user'];
     $sql = "SELECT nama, username, role FROM user WHERE id_user = ?";
     $stmt = $conn->prepare($sql);
@@ -66,10 +67,9 @@
         </nav>
 
         <main class="flex-grow container mx-auto px-4 py-8">
-            
             <div class="bg-white rounded-xl shadow-lg w-full max-w-4xl mx-auto overflow-hidden">
                 <div class="flex flex-col md:flex-row">
-                    <!-- Profile Sidebar -->
+                    <!-- Profile Menampilkan nama dan role -->
                     <div class="md:w-1/3 bg-gradient-to-b from-primary-dark to-emerald-800 text-white p-8 flex flex-col items-center justify-center">
                         <div class="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center text-white mb-6">
                             <i class="fas fa-user-circle text-5xl"></i>
@@ -78,6 +78,8 @@
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white mb-6">
                             <?= htmlspecialchars($user['role']); ?>
                         </span>
+
+                        <!-- Tombol edit profil -->
                         <div class="w-full mt-4">
                             <a href="edit_biodata.php" 
                                class="w-full text-center px-5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-md transition flex items-center justify-center">

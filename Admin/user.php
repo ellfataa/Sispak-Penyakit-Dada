@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data user berdasarkan ID
     $users = [];
     $sql = "SELECT * FROM user ORDER BY id_user ASC";
     $result = $conn->query($sql);
@@ -53,6 +54,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Looping untuk mengambil dan menampilkan data user (username, nama, role) -->
                         <?php foreach ($users as $index => $u): ?>
                             <tr class="hover:bg-purple-50">
                                 <td class="px-4 py-2 border text-center"><?= $index + 1; ?></td>

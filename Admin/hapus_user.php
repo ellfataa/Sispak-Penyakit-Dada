@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Mengambil data user berdasarkan ID
     $id = $_GET['id'] ?? null;
     if (!$id) {
         echo "ID tidak valid.";
@@ -19,7 +20,7 @@
     $stmt1->execute();
     $stmt1->close();
 
-    // Hapus user
+    // Proses hapus data user
     $stmt = $conn->prepare("DELETE FROM user WHERE id_user = ?");
     $stmt->bind_param("i", $id);
 

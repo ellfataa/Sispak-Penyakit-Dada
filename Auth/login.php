@@ -6,6 +6,7 @@
     $redirectTo = '';
     $error = "";
 
+    // Mengambil data dari form login
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['username'];
         $password = $_POST['password'];
@@ -76,7 +77,7 @@
     <body class="bg-gradient-to-tr from-white via-emerald-200 to-white min-h-screen flex items-center justify-center">
         <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col md:flex-row rounded-xl overflow-hidden shadow-lg max-w-4xl mx-auto bg-white">
-                <!-- Bagian Kiri - Ilustrasi -->
+                <!-- Bagian Kiri - LOGO -->
                 <div class="md:w-5/12 bg-primary-dark flex flex-col justify-center p-8 text-white">
                     <div class="mb-6 text-center">
                         <img src="../Images/logo2.png" alt="Sispak Penyakit Dada" class="h-30 mx-auto"/>
@@ -170,6 +171,7 @@
             </div>
         </div>
 
+        <!-- Script untuk redirect setelah login -->
         <?php if ($success && !empty($redirectTo)): ?>
         <script>
             setTimeout(function() {
@@ -178,6 +180,7 @@
         </script>
         <?php endif; ?>
 
+        <!-- Script untuk toggle password visibility -->
         <script>
             function togglePassword() {
                 const input = document.getElementById("password");

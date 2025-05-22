@@ -7,6 +7,7 @@
         exit();
     }
 
+    // Ambil data user berdasarkan ID
     $id_user = $_SESSION['id_user'];
     $sql = "SELECT nama, username, role FROM user WHERE id_user = ?";
     $stmt = $conn->prepare($sql);
@@ -18,6 +19,7 @@
 
     $success = $error = "";
 
+    // Mengambil data user (nama, username, role)
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nama = trim($_POST['nama']);
         $username = trim($_POST['username']);
@@ -107,7 +109,7 @@
                         <p class="text-white/80 text-center text-sm mb-4">Perbarui informasi akun Anda untuk menjaga data tetap akurat dan terkini.</p>
                     </div>
                     
-                    <!-- Form Content -->
+                    <!-- Formulir Edit Profil -->
                     <div class="md:w-2/3 p-8">
                         <h2 class="text-xl font-semibold text-primary-dark mb-6 flex items-center">
                             <i class="fas fa-pen-to-square mr-3"></i>
