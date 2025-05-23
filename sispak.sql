@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 21, 2025 at 03:40 PM
+-- Generation Time: May 23, 2025 at 12:30 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.12
 
@@ -151,46 +151,6 @@ CREATE TABLE `riwayat_konsultasi` (
   `waktu_konsultasi` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `riwayat_konsultasi`
---
-
-INSERT INTO `riwayat_konsultasi` (`id_riwayat`, `id_user`, `gejala_dipilih`, `hasil_diagnosa`, `probabilitas`, `kode_penyakit`, `waktu_konsultasi`) VALUES
-(38, 12, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\",\"G08\"]', 'Serangan Jantung', 0.00000670871, 'P01', '2025-05-10 12:33:31'),
-(43, 12, '[\"G01\",\"G010\",\"G02\",\"G03\",\"G04\",\"G05\",\"G09\"]', 'Otot Tegang', 0.000000889931, 'P06', '2025-05-16 02:20:29'),
-(44, 12, '[\"G01\",\"G012\",\"G04\",\"G05\",\"G06\",\"G08\",\"G09\"]', 'Perikarditis', 0.000000578455, NULL, '2025-05-16 02:42:55'),
-(45, 12, '[\"G01\",\"G010\",\"G011\",\"G012\",\"G013\",\"G02\",\"G03\"]', 'Jantung Koroner', 0.000000578455, 'P03', '2025-05-16 02:50:56'),
-(46, 12, '[\"G010\",\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000505733, 'P05', '2025-05-16 03:02:48'),
-(47, 13, '[\"G01\",\"G012\",\"G013\",\"G03\",\"G04\",\"G07\"]', 'Refluks Dada Naik', 0.0000103211, 'P04', '2025-05-16 03:05:43'),
-(48, 13, '[\"G010\",\"G02\",\"G03\",\"G06\"]', 'Serangan Jantung', 0.000161076, 'P01', '2025-05-16 05:59:47'),
-(49, 13, '[\"G010\",\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000505733, 'P05', '2025-05-16 06:00:30'),
-(50, 13, '[\"G010\",\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000505733, 'P05', '2025-05-16 06:03:45'),
-(51, 12, '[\"G01\",\"G010\",\"G011\",\"G09\"]', 'Otot Tegang', 0.000161076, 'P06', '2025-05-20 13:29:27'),
-(52, 12, '[\"G01\",\"G010\",\"G011\",\"G09\"]', 'Otot Tegang', 0.000161076, 'P06', '2025-05-20 13:31:56'),
-(53, 12, '[\"G01\",\"G010\",\"G011\",\"G09\"]', 'Otot Tegang', 0.000161076, 'P06', '2025-05-20 13:35:41'),
-(54, 12, '[\"G01\",\"G010\",\"G011\",\"G09\"]', 'Otot Tegang', 0.000161076, 'P06', '2025-05-20 13:35:55'),
-(55, 12, '[\"G01\",\"G010\",\"G011\",\"G09\"]', 'Otot Tegang', 0.000161076, 'P06', '2025-05-20 13:36:10'),
-(56, 12, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.0000505733, 'P01', '2025-05-20 13:42:36'),
-(57, 12, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.0000505733, 'P01', '2025-05-20 13:45:49'),
-(58, 12, '[\"G013\",\"G02\",\"G03\",\"G05\",\"G06\"]', 'Serangan Jantung', 0.0000213672, 'P01', '2025-05-20 14:02:35'),
-(59, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:10:18'),
-(60, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:11:54'),
-(61, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:12:05'),
-(62, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:12:17'),
-(63, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:12:22'),
-(64, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:12:56'),
-(65, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:13:06'),
-(66, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:13:13'),
-(67, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:13:24'),
-(68, 12, '[\"G01\",\"G010\",\"G07\",\"G08\",\"G09\"]', 'Pankreatitis', 0.0000213672, 'P05', '2025-05-20 14:14:08'),
-(69, 12, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\",\"G08\"]', 'Serangan Jantung', 0.00000670871, 'P01', '2025-05-20 14:15:09'),
-(70, 12, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\",\"G08\"]', 'Serangan Jantung', 0.00000670871, 'P01', '2025-05-20 14:18:06'),
-(71, 14, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.0000505733, 'P01', '2025-05-21 15:07:39'),
-(72, 14, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.00000849986, 'P01', '2025-05-21 15:13:31'),
-(73, 14, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.00000849986, 'P01', '2025-05-21 15:16:26'),
-(74, 14, '[\"G02\",\"G03\",\"G05\",\"G08\",\"G09\"]', 'Pankreatitis', 0.00000789273, 'P05', '2025-05-21 15:23:46'),
-(75, 14, '[\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.000059499, 'P05', '2025-05-21 15:30:34');
-
 -- --------------------------------------------------------
 
 --
@@ -210,10 +170,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `nama`, `username`, `password`, `role`) VALUES
-(1, 'admin', 'admin', '$2y$10$GSOIm02FoA9mdaBsXoUj1O5qzCqfgN1FfWtK4AwyFi/USUvMBj/Va', 'admin'),
-(12, 'Itachi Uchiha Clan', 'itachi', '$2y$10$aSXUAYjgh2Usp4MpC33GSufEAZgxfilbXKHkNPlFXfiE7VeMI.Rxq', 'user'),
-(13, 'Seblak Prasmanan', 'seblak', '$2y$10$sYwiub/.YCg3TRZzjbIg2.u6KQO5es0TERVTDhghKn.nwBAmaxJe6', 'user'),
-(14, 'Luthfi Fata', 'luthfi', '$2y$10$zF6w/WdCpI4O2W7hmwqUJONKyXwtM2KWB6KLJDV6pbF6r9GLc.Lrq', 'user');
+(1, 'admin', 'admin', '$2y$10$aSKEa2rrb6PNfZctU2cRkO2gOBgLiyKkCC6chdpv6pj.vaj4uWHTW', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -262,19 +219,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `penyakit_gejala`
 --
 ALTER TABLE `penyakit_gejala`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `riwayat_konsultasi`
 --
 ALTER TABLE `riwayat_konsultasi`
-  MODIFY `id_riwayat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id_riwayat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
