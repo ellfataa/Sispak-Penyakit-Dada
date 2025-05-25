@@ -29,9 +29,12 @@
 
                     $success = true;
                     echo "<script>alert('Login berhasil!');</script>";
+                    
                     // Redirect berdasarkan role
                     if ($user['role'] == 'admin') {
                         $redirectTo = "../Admin/dashboard_admin.php";
+                    } elseif ($user['role'] == 'pakar') {
+                        $redirectTo = "../Pakar/dashboard_pakar.php";
                     } else {
                         $redirectTo = "../Home/dashboard.php";
                     }

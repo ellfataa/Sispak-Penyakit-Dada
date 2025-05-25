@@ -2,7 +2,7 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -22,14 +22,35 @@
         <meta charset="UTF-8">
         <title>Data Penyakit</title>
         <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- JS untuk menampilkan alert berdasarkan parameter success -->
+        <script>
+            window.onload = () => {
+                const params = new URLSearchParams(window.location.search);
+                const success = params.get('success');
+                
+                if (success === 'tambah') {
+                    alert('Penyakit berhasil ditambahkan!');
+                } else if (success === 'edit') {
+                    alert('Penyakit berhasil diedit!');
+                } else if (success === 'hapus') {
+                    alert('Penyakit berhasil dihapus!');
+                }
+                
+                // Hapus parameter dari URL setelah menampilkan alert
+                if (success) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            };
+        </script>
     </head>
     <body class="bg-gray-50 text-gray-800">
         
         <!-- Navbar -->
         <nav class="flex items-center justify-between bg-purple-300 text-purple-900 px-6 py-4 shadow-md">
-            <h2 class="text-xl font-bold">Admin Panel - Penyakit</h2>
+            <h2 class="text-xl font-bold">Pakar Panel - Penyakit</h2>
             <div class="space-x-4">
-                <a href="dashboard_admin.php" class="hover:underline font-medium">Dashboard</a>
+                <a href="dashboard_pakar.php" class="hover:underline font-medium">Dashboard</a>
                 <a href="../Auth/logout.php" class="hover:underline font-medium">Logout</a>
             </div>
         </nav>

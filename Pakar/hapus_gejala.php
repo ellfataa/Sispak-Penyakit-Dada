@@ -2,7 +2,7 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -20,6 +20,9 @@
     $stmt->bind_param("s", $kode);
     $stmt->execute();
 
-    header("Location: gejala.php");
+    echo "<script>
+        alert('Gejala berhasil dihapus!');
+        window.location.href = 'gejala.php';
+    </script>";
     exit();
 ?>

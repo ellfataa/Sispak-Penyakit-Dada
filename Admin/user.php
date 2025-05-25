@@ -24,6 +24,23 @@
         <meta charset="UTF-8">
         <title>Data User</title>
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            window.onload = () => {
+                const params = new URLSearchParams(window.location.search);
+                const success = params.get('success');
+                
+                if (success === 'add') {
+                    alert('User berhasil ditambahkan!');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else if (success === 'edit') {
+                    alert('User berhasil diedit!');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else if (success === 'delete') {
+                    alert('User berhasil dihapus!');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            };
+        </script>
     </head>
     <body class="bg-purple-50 min-h-screen">
 

@@ -19,7 +19,8 @@
         $stmt->bind_param("ssss", $nama, $username, $password, $role);
 
         if ($stmt->execute()) {
-            header("Location: tambah_user.php?success=1");
+            // Redirect ke user.php dengan parameter success
+            header("Location: user.php?success=add");
             exit();
         } else {
             echo "Gagal menambahkan user: " . $conn->error;
@@ -33,15 +34,6 @@
         <meta charset="UTF-8">
         <title>Tambah User</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            window.onload = () => {
-                const params = new URLSearchParams(window.location.search);
-                if (params.get('success') === '1') {
-                    alert('User berhasil ditambahkan!');
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-            };
-        </script>
     </head>
     <body class="bg-purple-50 min-h-screen">
 
@@ -66,6 +58,7 @@
                     <select name="role" required class="w-full border border-gray-300 px-3 py-2 rounded">
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
+                        <option value="pakar">Pakar</option>
                     </select>
                 </div>
                 <div class="flex gap-2">

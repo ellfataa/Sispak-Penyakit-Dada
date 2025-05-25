@@ -2,7 +2,8 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    // Validasi role pakar
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -126,7 +127,7 @@
         }
     }
 
-    // Statistik untuk dashboard admin
+    // Statistik untuk dashboard pakar
     $totalKonsultasi = count($riwayat);
     $konsultasiHariIni = 0;
     $konsultasiBulanIni = 0;
@@ -149,27 +150,25 @@
 <html lang="id">
     <head>
         <meta charset="UTF-8">
-        <title>Riwayat Konsultasi - Admin Dashboard</title>
+        <title>Riwayat Konsultasi - Pakar Dashboard</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-50 text-gray-800">
 
         <!-- Navbar -->
         <nav class="flex items-center justify-between bg-purple-300 text-purple-900 px-6 py-4 shadow-md">
-            <h2 class="text-xl font-bold">Admin Panel - Sistem Pakar Diagnosa Penyakit Dada</h2>
+            <h2 class="text-xl font-bold">Pakar Panel - Sistem Pakar Diagnosa Penyakit Dada</h2>
             <div class="space-x-4">
-                <a href="dashboard_admin.php" class="hover:underline font-medium">Dashboard</a>
+                <a href="dashboard_pakar.php" class="hover:underline font-medium">Dashboard</a>
                 <a href="../Auth/logout.php" class="hover:underline font-medium">Logout</a>
             </div>
         </nav>
 
         <div class="max-w-7xl mx-auto px-4 py-6">
             <div class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-semibold">Riwayat Konsultasi Semua User</h1>
-                <div class="flex items-center space-x-4">
-                    <div class="text-sm text-gray-600">
-                        Total: <?= $totalKonsultasi ?> konsultasi
-                    </div>
+                <h1 class="text-2xl font-semibold">Riwayat Konsultasi Pasien</h1>
+                <div class="text-sm text-gray-600">
+                    Total: <?= $totalKonsultasi ?> konsultasi
                 </div>
             </div>
 
@@ -223,7 +222,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     Export ke Word
-            </a>
+            </a>            
 
             <!-- Tabel Riwayat Konsultasi -->
             <?php if (count($riwayat) > 0): ?>
@@ -236,10 +235,10 @@
                             <thead class="bg-purple-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">No</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nama User</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nama Pasien</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Hasil Diagnosa</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Probabilitas</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Gejala Dipilih</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Gejala yang Dialami</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Waktu Konsultasi</th>
                                 </tr>
                             </thead>
@@ -308,17 +307,17 @@
                         </svg>
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Riwayat Konsultasi</h3>
-                    <p class="text-gray-600">Belum ada user yang melakukan konsultasi pada sistem ini.</p>
+                    <p class="text-gray-600">Belum ada pasien yang melakukan konsultasi pada sistem ini.</p>
                 </div>
             <?php endif; ?>
 
             <!-- Tombol Kembali -->
             <div class="mt-8">
-                <a href="dashboard_admin.php" class="inline-flex items-center px-4 py-2 bg-purple-400 hover:bg-purple-500 text-white font-medium rounded-md shadow transition-colors duration-150">
+                <a href="dashboard_pakar.php" class="inline-flex items-center px-4 py-2 bg-purple-400 hover:bg-purple-500 text-white font-medium rounded-md shadow transition-colors duration-150">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Kembali ke Dashboard Admin
+                    Kembali ke Dashboard
                 </a>
             </div>
         </div>

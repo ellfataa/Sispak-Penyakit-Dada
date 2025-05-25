@@ -7,20 +7,6 @@
         exit();
     }
 
-    // Mengambil data gejala
-    $gejala = [];
-    $resultGejala = $conn->query("SELECT * FROM gejala ORDER BY kode_gejala ASC");
-    while ($row = $resultGejala->fetch_assoc()) {
-        $gejala[] = $row;
-    }
-
-    // Mengambil data penyakit
-    $penyakit = [];
-    $resultPenyakit = $conn->query("SELECT * FROM penyakit ORDER BY kode_penyakit ASC");
-    while ($row = $resultPenyakit->fetch_assoc()) {
-        $penyakit[] = $row;
-    }
-
     // Mengambil data user
     $user = [];
     $resultUser = $conn->query("SELECT * FROM user ORDER BY id_user ASC");
@@ -28,23 +14,15 @@
         $user[] = $row;
     }
 
-    // JOIN untuk Relasi antara penyakit dan gejala
-    $penyakitGejala = [];
-    $resultPenyakitGejala = $conn->query("
-        SELECT 
-            pg.id,
-            pg.kode_penyakit,
-            pg.kode_gejala,
-            p.nama_penyakit,
-            g.nama_gejala
-        FROM penyakit_gejala pg
-        LEFT JOIN penyakit p ON pg.kode_penyakit = p.kode_penyakit
-        LEFT JOIN gejala g ON pg.kode_gejala = g.kode_gejala
-        ORDER BY pg.kode_penyakit ASC, pg.kode_gejala ASC
-    ");
-    while ($row = $resultPenyakitGejala->fetch_assoc()) {
-        $penyakitGejala[] = $row;
+    // Mengambil statistik riwayat konsultasi
+    $totalKonsultasi = 0;
+    $resultKonsultasi = $conn->query("SELECT COUNT(*) as total FROM riwayat_konsultasi");
+    if ($resultKonsultasi) {
+        $row = $resultKonsultasi->fetch_assoc();
+        $totalKonsultasi = $row['total'];
     }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -68,8 +46,39 @@
         <div class="max-w-6xl mx-auto px-4 py-6">
             <h1 class="text-2xl font-semibold mb-6">Dashboard Admin</h1>
 
+            <!-- Statistik Card -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total User</p>
+                            <p class="text-2xl font-semibold text-gray-900"><?= count($user) ?></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total Konsultasi</p>
+                            <p class="text-2xl font-semibold text-gray-900"><?= $totalKonsultasi ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <?php
-            // Render untuk daata gejala, penyakit, dan user
+            // Fungsi render untuk data user
             function render_section($title, $data, $headers, $link, $columns) {
                 echo '
                 <div class="mb-10">
@@ -96,38 +105,7 @@
                 echo '</tbody></table></div></div>';
             }
 
-            // Render untuk data relasi penyakit-gejala
-            function render_penyakit_gejala_section($title, $data, $headers, $link) {
-                echo '
-                <div class="mb-10">
-                    <div class="flex items-center justify-between mb-3">
-                        <h2 class="text-lg font-bold text-purple-800">' . $title . '</h2>
-                        <a href="' . $link . '" class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-1 rounded shadow text-sm">Kelola</a>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border border-gray-300 shadow-sm rounded">
-                            <thead class="bg-purple-100 text-purple-800">
-                                <tr>';
-                foreach ($headers as $head) {
-                    echo '<th class="p-2 border-b text-left text-sm">' . $head . '</th>';
-                }
-                echo '</tr></thead><tbody>';
-                foreach ($data as $i => $row) {
-                    echo '<tr class="hover:bg-purple-50">';
-                    echo '<td class="p-2 border-b text-sm">' . ($i + 1) . '</td>';
-                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['kode_penyakit']) . '</td>';
-                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['nama_penyakit'] ?? '-') . '</td>';
-                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['kode_gejala']) . '</td>';
-                    echo '<td class="p-2 border-b text-sm">' . htmlspecialchars($row['nama_gejala'] ?? '-') . '</td>';
-                    echo '</tr>';
-                }
-                echo '</tbody></table></div></div>';
-            }
-
-            // Memanggil fungsi render_section untuk setiap bagian agar ditampilkan
-            render_section('Data Gejala', $gejala, ['No', 'Kode Gejala', 'Nama Gejala'], 'gejala.php', ['kode_gejala', 'nama_gejala']);
-            render_section('Data Penyakit', $penyakit, ['No', 'Kode Penyakit', 'Nama Penyakit'], 'penyakit.php', ['kode_penyakit', 'nama_penyakit']);
-            render_penyakit_gejala_section('Data Aturan Penyakit-Gejala', $penyakitGejala, ['No', 'Kode Penyakit', 'Nama Penyakit', 'Kode Gejala', 'Nama Gejala'], 'penyakit_gejala.php');
+            // Render section untuk data user
             render_section('Data User', $user, ['No', 'Nama', 'Username', 'Role'], 'user.php', ['nama', 'username', 'role']);
             ?>
         </div>

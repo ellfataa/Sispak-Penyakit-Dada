@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 23, 2025 at 12:30 PM
+-- Generation Time: May 25, 2025 at 01:56 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.12
 
@@ -151,6 +151,23 @@ CREATE TABLE `riwayat_konsultasi` (
   `waktu_konsultasi` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `riwayat_konsultasi`
+--
+
+INSERT INTO `riwayat_konsultasi` (`id_riwayat`, `id_user`, `gejala_dipilih`, `hasil_diagnosa`, `probabilitas`, `kode_penyakit`, `waktu_konsultasi`) VALUES
+(95, 18, '[\"G010\",\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.00000849986, 'P05', '2025-05-23 12:37:35'),
+(96, 18, '[\"G01\",\"G013\",\"G03\",\"G04\"]', 'Refluks Dada Naik', 0.000059499, 'P04', '2025-05-23 13:12:50'),
+(97, 18, '[\"G01\",\"G013\",\"G03\",\"G04\"]', 'Refluks Dada Naik', 0.000059499, 'P04', '2025-05-23 13:14:46'),
+(98, 23, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.00000849986, 'P01', '2025-05-25 13:46:20'),
+(99, 23, '[\"G01\",\"G02\",\"G04\",\"G05\",\"G06\",\"G07\"]', 'Perikarditis', 0.00000121427, 'P02', '2025-05-25 13:48:51'),
+(100, 23, '[\"G01\",\"G011\",\"G02\",\"G03\",\"G06\"]', 'Jantung Koroner', 0.00000849986, 'P03', '2025-05-25 13:49:19'),
+(101, 23, '[\"G01\",\"G02\",\"G03\",\"G06\",\"G07\"]', 'Serangan Jantung', 0.00000849986, 'P01', '2025-05-25 13:50:40'),
+(102, 23, '[\"G01\",\"G012\",\"G013\",\"G03\",\"G04\",\"G07\"]', 'Refluks Dada Naik', 0.00000121427, 'P04', '2025-05-25 13:51:20'),
+(103, 23, '[\"G010\",\"G02\",\"G03\",\"G08\",\"G09\"]', 'Pankreatitis', 0.00000849986, 'P05', '2025-05-25 13:51:59'),
+(104, 23, '[\"G01\",\"G011\",\"G013\",\"G02\",\"G04\",\"G05\",\"G09\"]', 'Otot Tegang', 0.000000173467, 'P06', '2025-05-25 13:52:37'),
+(105, 23, '[\"G010\",\"G012\",\"G03\",\"G06\",\"G07\",\"G08\"]', 'Pneumonia', 0.00000121427, 'P07', '2025-05-25 13:53:13');
+
 -- --------------------------------------------------------
 
 --
@@ -162,7 +179,7 @@ CREATE TABLE `user` (
   `nama` varchar(100) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','user') NOT NULL
+  `role` enum('admin','user','pakar') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -170,7 +187,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `nama`, `username`, `password`, `role`) VALUES
-(1, 'admin', 'admin', '$2y$10$aSKEa2rrb6PNfZctU2cRkO2gOBgLiyKkCC6chdpv6pj.vaj4uWHTW', 'admin');
+(1, 'admin', 'admin', '$2y$10$aSKEa2rrb6PNfZctU2cRkO2gOBgLiyKkCC6chdpv6pj.vaj4uWHTW', 'admin'),
+(18, 'Naruto Uzumaki', 'naruto', '$2y$10$IMDptuc0.zjWEFarx0BW1ORpMj8IGZIJSQR6pwaWw/w8Xky17dvb.', 'user'),
+(19, 'Gojo Satoru', 'gojo', '$2y$10$eD90AngX1PO5DsK2HNvdwODUJSm2IuQPEr83NxIvFgrnOgy6brZ1S', 'pakar'),
+(21, 'Geto Suguru', 'geto', '$2y$10$zs5/QVCTDbESyXdXFJCYB.rIK9DQVgJJlNDA5ldg7fcm3olKtP/y2', 'pakar'),
+(23, 'Mikasa Ackerman', 'mikasa', '$2y$10$SwUceRpfXcG7V/mS8r9KA.3GEFw3L24Eq2XHhYCUUpArNTh8d14iS', 'user');
 
 --
 -- Indexes for dumped tables
@@ -219,19 +240,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `penyakit_gejala`
 --
 ALTER TABLE `penyakit_gejala`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `riwayat_konsultasi`
 --
 ALTER TABLE `riwayat_konsultasi`
-  MODIFY `id_riwayat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id_riwayat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables

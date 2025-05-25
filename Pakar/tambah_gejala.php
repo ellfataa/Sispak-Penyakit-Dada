@@ -2,7 +2,7 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -18,7 +18,10 @@
         $stmt->bind_param("ss", $kode, $nama);
 
         if ($stmt->execute()) {
-            header("Location: tambah_gejala.php?success=1");
+            echo "<script>
+                alert('Gejala berhasil ditambahkan!');
+                window.location.href = 'gejala.php';
+            </script>";
             exit();
         } else {
             echo "Gagal tambah gejala: " . $conn->error;
@@ -32,17 +35,6 @@
         <meta charset="UTF-8">
         <title>Tambah Gejala</title>
         <script src="https://cdn.tailwindcss.com"></script>
-
-        <!-- JS untuk menampilkan alert -->
-        <script>
-            window.onload = () => {
-                const params = new URLSearchParams(window.location.search);
-                if (params.get('success') === '1') {
-                    alert('Gejala berhasil ditambahkan!');
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-            };
-        </script>
     </head>
     <body class="bg-purple-50 min-h-screen">
 

@@ -40,7 +40,8 @@
         }
 
         if ($stmt->execute()) {
-            header("Location: user.php");
+            // Redirect ke user.php dengan parameter success
+            header("Location: user.php?success=edit");
             exit();
         } else {
             echo "Gagal update user: " . $conn->error;
@@ -76,6 +77,7 @@
                     <select name="role" required class="w-full border border-gray-300 px-3 py-2 rounded">
                         <option value="admin" <?= $data['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
                         <option value="user" <?= $data['role'] === 'user' ? 'selected' : ''; ?>>User</option>
+                        <option value="pakar" <?= $data['role'] === 'pakar' ? 'selected' : ''; ?>>Pakar</option>
                     </select>
                 </div>
                 <div class="flex gap-2">

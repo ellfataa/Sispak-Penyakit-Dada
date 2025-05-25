@@ -2,7 +2,7 @@
 session_start();
 include '../Auth/connect.php';
 
-if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
     header("Location: ../Auth/login.php");
     exit();
 }
@@ -157,10 +157,31 @@ if (isset($_GET['edit_id'])) {
         <nav class="flex items-center justify-between bg-purple-300 text-purple-900 px-6 py-4 shadow-md">
             <h2 class="text-xl font-bold">Kelola Aturan Penyakit-Gejala</h2>
             <div class="space-x-4">
-                <a href="dashboard_admin.php" class="hover:underline font-medium">Dashboard</a>
+                <a href="dashboard_pakar.php" class="hover:underline font-medium">Dashboard</a>
                 <a href="../Auth/logout.php" class="hover:underline font-medium">Logout</a>
             </div>
         </nav>
+
+        <!-- Statistik -->
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="mt-6 bg-white p-4 rounded shadow-md">
+                <h4 class="text-md font-bold text-purple-800 mb-2">Statistik</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600"><?php echo count($penyakitGejala); ?></div>
+                        <div class="text-gray-600">Total Aturan</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600"><?php echo count($penyakitOptions); ?></div>
+                        <div class="text-gray-600">Total Penyakit</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600"><?php echo count($gejalaOptions); ?></div>
+                        <div class="text-gray-600">Total Gejala</div>
+                    </div>
+                </div>
+            </div> 
+        </div>      
 
         <div class="max-w-6xl mx-auto px-4 py-6">
             <?php if ($message): ?>
@@ -272,25 +293,6 @@ if (isset($_GET['edit_id'])) {
                             <?php endif; ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-            
-            <!-- Statistik -->
-            <div class="mt-6 bg-white p-4 rounded shadow-md">
-                <h4 class="text-md font-bold text-purple-800 mb-2">Statistik</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600"><?php echo count($penyakitGejala); ?></div>
-                        <div class="text-gray-600">Total Aturan</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600"><?php echo count($penyakitOptions); ?></div>
-                        <div class="text-gray-600">Total Penyakit</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600"><?php echo count($gejalaOptions); ?></div>
-                        <div class="text-gray-600">Total Gejala</div>
-                    </div>
                 </div>
             </div>
         </div>

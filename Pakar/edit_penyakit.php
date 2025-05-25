@@ -2,7 +2,7 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -35,7 +35,8 @@
         $stmt->bind_param("ssss", $nama, $deskripsi, $solusi, $kode);
         $stmt->execute();
 
-        header("Location: penyakit.php");
+        // Mengarahkan ke penyakit.php dengan parameter success
+        header("Location: penyakit.php?success=edit");
         exit();
     }
 ?>

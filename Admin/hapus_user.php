@@ -25,7 +25,8 @@
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        header("Location: user.php");
+        // Redirect ke user.php dengan parameter success
+        header("Location: user.php?success=delete");
         exit();
     } else {
         echo "Gagal menghapus user: " . $conn->error;

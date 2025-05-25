@@ -2,7 +2,7 @@
     session_start();
     include '../Auth/connect.php';
 
-    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'pakar') {
         header("Location: ../Auth/login.php");
         exit();
     }
@@ -28,9 +28,9 @@
     <body class="bg-gray-100">
         <!-- Navbar -->
         <nav class="flex items-center justify-between bg-purple-300 text-purple-900 px-6 py-4 shadow-md">
-            <h2 class="text-xl font-bold">Admin Panel - Gejala</h2>
+            <h2 class="text-xl font-bold">Pakar Panel - Gejala</h2>
             <div class="space-x-4">
-                <a href="dashboard_admin.php" class="hover:underline font-medium">Dashboard</a>
+                <a href="dashboard_pakar.php" class="hover:underline font-medium">Dashboard</a>
                 <a href="../Auth/logout.php" class="hover:underline font-medium">Logout</a>
             </div>
         </nav>
