@@ -67,6 +67,7 @@
             <h2 class="text-xl font-bold">Pakar Panel - Sistem Pakar Diagnosa Penyakit Dada</h2>
             <div class="space-x-4">
                 <a href="riwayat_konsultasi.php" class="hover:underline font-medium">Riwayat Konsultasi</a>
+                <a href="profil.php" class="hover:underline font-medium">Profil</a>
                 <a href="../Auth/logout.php" class="hover:underline font-medium">Logout</a>
             </div>
         </nav>
